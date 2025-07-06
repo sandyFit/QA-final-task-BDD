@@ -115,7 +115,7 @@ npm run wdio
 
 ---
 
-### How to Trigger Screenshot Capture on Failure
+## How to Trigger Screenshot Capture on Failure
 
 To verify that screenshots are correctly taken when a test fails:
 
