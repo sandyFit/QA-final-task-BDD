@@ -43,7 +43,7 @@ exports.config = {
     // and 30 processes will get spawned. The property handles how many capabilities
     // from the same test should run tests.
     //
-    maxInstances: 1,
+    maxInstances: 2,
     //
     // If you have trouble getting all important capabilities together, check out the
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
@@ -51,9 +51,16 @@ exports.config = {
     //
     capabilities: [
         {
-        browserName: 'chrome'
+            maxInstances: 1,
+            browserName: 'chrome',
+            acceptInsecureCerts: true
+        },
+        {
+            maxInstances: 1,
+            browserName: 'MicrosoftEdge',
+            acceptInsecureCerts: true
         }
-    ],
+      ],
 
     //
     // ===================
@@ -125,7 +132,16 @@ exports.config = {
     // Test reporter for stdout.
     // The only one supported by default is 'dot'
     // see also: https://webdriver.io/docs/dot-reporter
-    reporters: ['spec'],
+    reporters: [
+        'spec',
+        ['allure', {
+            outputDir: 'allure-results',
+            disableWebdriverStepsReporting: true,
+            disableWebdriverScreenshotsReporting: false,
+            useCucumberStepReporter: true
+        }]
+      ],
+      
 
     // If you are using Cucumber you need to specify the location of your step definitions.
     cucumberOpts: {

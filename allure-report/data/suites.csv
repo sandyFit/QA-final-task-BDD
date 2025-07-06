@@ -1,0 +1,7 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","10827","UC-3 Login with accepted usernames","","Thu Jul 03 14:39:20 COT 2025","passed","Thu Jul 03 14:39:30 COT 2025","","Login functionality on SauceDemo","",""
+"","4112","UC-1 Login with empty credentials","","Thu Jul 03 14:38:54 COT 2025","passed","Thu Jul 03 14:38:58 COT 2025","","Login functionality on SauceDemo","",""
+"","10519","UC-3 Login with accepted usernames","","Thu Jul 03 14:39:18 COT 2025","passed","Thu Jul 03 14:39:29 COT 2025","","Login functionality on SauceDemo","",""
+"","4093","UC-2 Login with only username","","Thu Jul 03 14:38:59 COT 2025","passed","Thu Jul 03 14:39:03 COT 2025","","Login functionality on SauceDemo","",""
+"","3902","UC-2 Login with only username","","Thu Jul 03 14:38:58 COT 2025","passed","Thu Jul 03 14:39:02 COT 2025","","Login functionality on SauceDemo","",""
+"","4506","UC-1 Login with empty credentials","","Thu Jul 03 14:38:54 COT 2025","passed","Thu Jul 03 14:38:59 COT 2025","","Login functionality on SauceDemo","",""
