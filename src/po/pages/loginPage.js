@@ -72,7 +72,7 @@ class LoginPage extends BasePage {
     async isUsernameInputEmpty() {
         const value = await this.getUsernameValue();
         const isEmpty = value === '';
-        console.log(`👤 Username field empty: ${isEmpty}`);
+        console.log(`Username field empty: ${isEmpty}`);
         return isEmpty;
     }
 
@@ -83,7 +83,7 @@ class LoginPage extends BasePage {
     async isPasswordInputEmpty() {
         const value = await this.getPasswordValue();
         const isEmpty = value === '';
-        console.log(`🔐 Password field empty: ${isEmpty}`);
+        console.log(`Password field empty: ${isEmpty}`);
         return isEmpty;
     }
 
@@ -100,7 +100,7 @@ class LoginPage extends BasePage {
         await browser.keys(['Control', 'a']);
         await browser.keys('Delete');
 
-        console.log("🧹 Username field cleared");
+        console.log("Username field cleared");
     }
 
     /**
@@ -115,7 +115,7 @@ class LoginPage extends BasePage {
         await browser.keys(['Control', 'a']);
         await browser.keys('Delete');
 
-        console.log("🧹 Password field cleared");
+        console.log("Password field cleared");
     }
 
     /**

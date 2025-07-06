@@ -6,9 +6,9 @@ This project automates login functionality testing for [SauceDemo](https://www.s
 
 ---
 
-## 📋 Test Scenarios
+## Test Scenarios
 
-### 🧪 UC-1: Login with Empty Credentials
+### UC-1: Login with Empty Credentials
 - **Goal**: Validate error message when both fields are empty
 - **Steps**:
   1. Go to [SauceDemo](https://www.saucedemo.com/)
@@ -16,7 +16,7 @@ This project automates login functionality testing for [SauceDemo](https://www.s
   3. Click Login
   4. Expect error: `"Username is required"`
 
-### 🧪 UC-2: Login with Username Only
+### UC-2: Login with Username Only
 - **Goal**: Validate error when password is missing
 - **Steps**:
   1. Enter valid username
@@ -24,7 +24,7 @@ This project automates login functionality testing for [SauceDemo](https://www.s
   3. Click Login
   4. Expect error: `"Password is required"`
 
-### 🧪 UC-3: Login with Valid Credentials
+### UC-3: Login with Valid Credentials
 - **Goal**: Ensure login succeeds with correct credentials
 - **Steps**:
   1. Enter a valid username from the accepted list
@@ -34,7 +34,7 @@ This project automates login functionality testing for [SauceDemo](https://www.s
 
 ---
 
-## ⚙️ Technical Stack
+## Technical Stack
 
 | Category           | Tool/Framework                  |
 |--------------------|----------------------------------|
@@ -49,7 +49,7 @@ This project automates login functionality testing for [SauceDemo](https://www.s
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```plaintext
 ├── allure-report/

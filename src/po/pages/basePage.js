@@ -82,7 +82,7 @@ class BasePage {
     * @returns {string} - Attribute value
     */
     async getElementAttribute(selector, attribute) {
-        console.log(`🏷️ Getting attribute '${attribute}' from element: ${selector}`)
+        console.log(`Getting attribute '${attribute}' from element: ${selector}`)
         try {
             const element = await $(selector)
             await element.waitForDisplayed({ timeout: 5000 })
