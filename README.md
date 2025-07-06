@@ -54,6 +54,7 @@ This project automates login functionality testing for [SauceDemo](https://www.s
 ```plaintext
 ├── allure-report/
 ├── allure-results/
+├── screenshots/
 ├── src/
 │ ├── config/
 │ │ └── wdio.conf.js
@@ -63,7 +64,6 @@ This project automates login functionality testing for [SauceDemo](https://www.s
 │ │ ├── basePage.js
 │ │ ├── dashboardPage.js
 │ │ └── loginPage.js
-│ ├── screenshots/
 │ ├── step-definitions/
 │ │ └── action.steps.js
 │ │ └── hooks.js
@@ -112,6 +112,17 @@ npm run wdio
 - `visual_user`
 
 **Password:** `secret_sauce`
+
+---
+
+### How to Trigger Screenshot Capture on Failure
+
+To verify that screenshots are correctly taken when a test fails:
+
+1. Open the file `src/features/login.feature`.
+2. Modify one of the expected error messages **intentionally**, for example:
+   ```gherkin
+   Then I should see the error message "Wrong message"
 
 ---
 

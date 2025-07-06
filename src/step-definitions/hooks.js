@@ -12,14 +12,23 @@ Before(async function (scenario) {
 
 // 🔹 After Hook — runs after each scenario
 After(async function (scenario) {
-    const scenarioName = scenario?.pickle?.name || 'Unnamed scenario';
+    const scenarioName = scenario?.pickle?.name || 'Unnamed_scenario';
     console.log(`✅ Finished scenario: ${scenarioName}`);
 
     if (scenario.result?.status === 'FAILED') {
-        const filename = scenarioName.replace(/\s+/g, '_') + '.png';
-        const filepath = path.join('./screenshots', filename);
-        if (!fs.existsSync('./screenshots')) fs.mkdirSync('./screenshots');
-        await browser.saveScreenshot(filepath);
-        console.log(`📸 Screenshot saved: ${filepath}`);
+        const dirPath = path.resolve(__dirname, '../../screenshots');
+        if (!fs.existsSync(dirPath)) fs.mkdirSync(dirPath, { recursive: true });
+
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const filename = `${scenarioName.replace(/\s+/g, '_')}_${timestamp}.png`;
+        const filepath = path.join(dirPath, filename);
+
+        try {
+            console.log('Saving screenshot to:', filepath);
+            await browser.saveScreenshot(filepath);
+            console.log(`📸 Screenshot saved: ${filepath}`);
+        } catch (err) {
+            console.error('❌ Screenshot failed to save:', err);
+        }
     }
 });

@@ -8,6 +8,7 @@ Feature: Login functionality on SauceDemo
     And I click the login button
     Then I should see the error message "Username is required"
 
+
   Scenario: UC-2 Login with only username
     Given I open the login page
     When I enter username "any_username"
