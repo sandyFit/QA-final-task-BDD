@@ -1,4 +1,5 @@
 const BasePage = require('./basePage');
+const {logger} = require('../../utils/logger');
 
 /**
  * DashboardPage class handles verification and actions on the
@@ -10,36 +11,61 @@ class DashboardPage extends BasePage {
      */
     constructor() {
         super("https://www.saucedemo.com/");
+
+        // Define dashboard-specific selectors
+        this.selectors = {
+            inventoryContainer: '[data-test="inventory-container"]',
+            inventoryList: '[data-test="inventory-list"]',
+            shoppingCartBadge: '[data-test="shopping-cart-badge"]',
+            menuButton: '[data-test="react-burger-menu-btn"]'
+        };
     }
 
     /**
      * Override base waitForPageLoad to include dashboard-specific verification
      * Waits for both document ready state AND inventory container visibility
      */
-    waitForPageLoad() {
-        // First wait for basic page load
-        super.waitForPageLoad();
+    async waitForPageLoad() {
+        logger.info('Waiting for dashboard page to load...');
 
-        // Then wait for dashboard-specific elements
-        browser.waitUntil(() => {
-            return $('[data-test="inventory-container"]').isDisplayed();
+        // First wait for basic page load
+        await super.waitForPageLoad();
+
+        // Then wait for dashboard-specific elements using BasePage method
+        await browser.waitUntil(async () => {
+            return await super.isPageDisplayed(this.selectors.inventoryContainer);
         }, {
-            timeout: 5000,
+            timeout: 10000,
             timeoutMsg: 'Dashboard inventory container did not appear in time'
         });
 
-        console.log('Dashboard page fully loaded with inventory container visible');
+        logger.info('✅ Dashboard page fully loaded with inventory container visible');
     }
 
     /**
      * Check if the dashboard is currently loaded (for verification purposes)
-     * @returns {boolean} - True if the inventory container is displayed
+     * Uses BasePage isPageDisplayed method for consistency
+     * @returns {Promise<boolean>} - True if the inventory container is displayed
      */
-    isLoaded() {
+    async isDashboardDisplayed() {
+        logger.info('Checking if dashboard is loaded...');
+        const isDisplayed = await super.isPageDisplayed(this.selectors.inventoryContainer);
+        logger.info(`Dashboard loaded status: ${isDisplayed}`);
+        return isDisplayed;
+    }
+
+    /**
+     * Get the current page title
+     * @returns {Promise<string>} - The page title
+     */
+    async getCurrentPageTitle() {
         try {
-            return $('[data-test="inventory-container"]').isDisplayed();
+            const title = await super.getCurrentPageTitle();
+            logger.info(`Dashboard page title: "${title}"`);
+            return title;
         } catch (error) {
-            return false;
+            logger.error(`Error getting page title: ${error.message}`);
+            throw new Error(`Failed to get dashboard page title: ${error.message}`);
         }
     }
 }

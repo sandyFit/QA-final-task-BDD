@@ -1,7 +1,5 @@
-/**
- * BasePage class provides shared utility methods and navigation helpers
- * for all page objects in the test suite.
- */
+const {logger} = require('../../utils/logger');
+
 class BasePage {
     /**
      * @param {string} url - The base URL of the page
@@ -11,22 +9,59 @@ class BasePage {
     }
 
     /**
+     * Get current URL
+     * @returns {Promise<string>} - Current page URL
+     */
+    async getCurrentUrl() {
+        return await browser.getUrl();
+    }
+
+    /**
      * Navigate to the specified URL and wait for the page to fully load
      * @param {string} url - The URL to navigate to
      */
     open(url) {
-        console.log(`Navigating to: ${url}`);
+        logger.info(`Navigating to: ${url}`);
         browser.url(url);
         this.waitForPageLoad();
-        console.log(`Successfully navigated to: ${browser.getUrl()}`);
+        logger.info(`Successfully navigated to: ${browser.getUrl()}`);
+    }
+
+    /**
+     * Check if a specific page element is displayed
+     * Should be overridden by subclasses to check page-specific elements
+     * @param {string} selector - The selector of the element to check (optional)
+     * @returns {boolean} - True if the page/element is displayed
+     */
+    isPageDisplayed(selector = null) {
+        if (!selector) {
+            logger.warn('isPageDisplayed called without selector - subclass should override this method');
+            return true; // Base implementation assumes page is displayed
+        }
+
+        try {
+            const element = $(selector);
+            const isVisible = element.isDisplayed();
+
+            if (isVisible) {
+                logger.info(`✅ Element '${selector}' is displayed on the page.`);
+            } else {
+                logger.warn(`❌ Element '${selector}' is not displayed.`);
+            }
+
+            return isVisible;
+        } catch (error) {
+            logger.error(`❌ Error checking element '${selector}': ${error.message}`);
+            return false;
+        }
     }
 
     /**
      * Get the current page title
-     * @returns {string} - The title of the current page
+     * @returns {Promise<string>} - The title of the current page
      */
-    getCurrentPageTitle() {
-        return browser.getTitle();
+    async getCurrentPageTitle() {
+        return await browser.getTitle();
     }
 
     /**
@@ -34,14 +69,16 @@ class BasePage {
      * Can be overridden by subclasses for page-specific loading verification
      * Throws an error if the page doesn't load within the timeout
      */
-    waitForPageLoad() {
-        browser.waitUntil(() => {
-            return browser.execute(() => document.readyState === "complete");
+    async waitForPageLoad() {
+        await browser.waitUntil(async () => {
+            return await browser.execute(() => document.readyState === "complete");
         }, {
-            timeout: 2000,
+            timeout: 5000, // Increased from 2000 for better reliability
             timeoutMsg: 'Page did not load in time'
         });
+        logger.info('✅ Page loaded successfully');
     }
+
 
     /**
      * Type text into a given element (input field)
@@ -64,19 +101,23 @@ class BasePage {
         await el.click();
         await browser.keys(['Control', 'a']);
         await browser.keys('Delete');
-        console.log(`✅ Successfully cleared field: ${selector}`);
+        logger.info(`✅ Successfully cleared field: ${selector}`);
     }
 
     /**
      * Get text content from a given element
-     * @param {string} selector - The selector of the element
-     * @returns {string} - The text content of the element
-     */
-    getElementText(selector) {
-        const el = $(selector);
-        el.waitForDisplayed();
-        return el.getText();
-    }
+    * @param { string } selector - The selector of the element
+    * @returns { Promise < string >} - The text content of the element
+    */
+    async getElementText(selector) {
+    logger.info(`Getting text from element: ${selector}`);
+    const el = await $(selector);
+    await el.waitForDisplayed({ timeout: 5000 });
+    const text = await el.getText();
+    logger.info(`✅ Text retrieved from ${selector}: "${text}"`);
+    return text;
+}
+
 
     /**
     * Get attribute value of an element
@@ -85,16 +126,16 @@ class BasePage {
     * @returns {string} - Attribute value
     */
     async getElementAttribute(selector, attribute) {
-        console.log(`Getting attribute '${attribute}' from element: ${selector}`)
+        logger.info(`Getting attribute '${attribute}' from element: ${selector}`)
         try {
             const element = await $(selector)
             await element.waitForDisplayed({ timeout: 5000 })
             const value = await element.getAttribute(attribute)
             const attributeValue = value || ''
-            console.log(`Attribute '${attribute}' value: "${attributeValue}"`)
+            logger.info(`Attribute '${attribute}' value: "${attributeValue}"`)
             return attributeValue
         } catch (error) {
-            console.log(`Failed to get attribute '${attribute}' from ${selector}: ${error}`)
+            logger.error(`Failed to get attribute '${attribute}' from ${selector}: ${error}`)
             throw new Error(`Unable to get attribute '${attribute}' from element '${selector}': ${error}`)
         }
     }

@@ -1,11 +1,12 @@
 const { Before, After } = require('@wdio/cucumber-framework');
 const fs = require('fs');
 const path = require('path');
+const {logger} = require('../utils/logger');
 
 // 🔹 Before Hook — runs before each scenario
 Before(async function (scenario) {
     const scenarioName = scenario?.pickle?.name || 'Unnamed scenario';
-    console.log(`🎬 Starting scenario: ${scenarioName}`);
+    logger.info(`🎬 Starting scenario: ${scenarioName}`);
     await browser.reloadSession();
 });
 
@@ -13,7 +14,7 @@ Before(async function (scenario) {
 // 🔹 After Hook — runs after each scenario
 After(async function (scenario) {
     const scenarioName = scenario?.pickle?.name || 'Unnamed_scenario';
-    console.log(`✅ Finished scenario: ${scenarioName}`);
+    logger.info(`✅ Finished scenario: ${scenarioName}`);
 
     if (scenario.result?.status === 'FAILED') {
         const dirPath = path.resolve(__dirname, '../../screenshots');
@@ -24,11 +25,11 @@ After(async function (scenario) {
         const filepath = path.join(dirPath, filename);
 
         try {
-            console.log('Saving screenshot to:', filepath);
+            logger.info('Saving screenshot to:', filepath);
             await browser.saveScreenshot(filepath);
-            console.log(`📸 Screenshot saved: ${filepath}`);
+            logger.info(`📸 Screenshot saved: ${filepath}`);
         } catch (err) {
-            console.error('❌ Screenshot failed to save:', err);
+            logger.error('❌ Screenshot failed to save:', err);
         }
     }
 });

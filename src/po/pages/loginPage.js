@@ -1,4 +1,5 @@
 const BasePage = require("./basePage");
+const {logger} = require('../../utils/logger');
 
 /**
  * Login Page Object Class
@@ -18,18 +19,43 @@ class LoginPage extends BasePage {
     }
 
     /**
-     * Navigate to the login page
+     * Navigate to the login page and wait for it to fully load
      */
     async open() {
-        super.open(this.url);
+        await super.open(this.url);
     }
+
+    async waitForPageLoad() {
+        logger.info('Waiting for login page to load...');
+        await super.waitForPageLoad();
+
+        await browser.waitUntil(async () => {
+            return await super.isPageDisplayed(this.selectors.usernameInput);
+        }, {
+            timeout: 5000,
+            timeoutMsg: 'Login page did not load properly'
+        });
+
+        logger.info('✅ Login page fully loaded');
+    }
+
+
+    /**
+     * Check login page is displayed
+     */
+    async isLoginPageDisplayed() {
+        const isVisible = await super.isPageDisplayed(this.selectors.usernameInput);
+        logger.info(`Login page visible: ${isVisible}`);
+        return isVisible;
+    }
+
 
     /**
      * Enter username in the username input
      * @param {string} username 
      */
     async enterUsername(username) {
-        console.log(`Username: ${username}`);
+        logger.info(`Username: ${username}`);
         await $(this.selectors.usernameInput).setValue(username);
     }
 
@@ -38,7 +64,9 @@ class LoginPage extends BasePage {
      * @param {string} password 
      */
     async enterPassword(password) {
-        console.log(`Password: ${password}`);
+        if (process.env.DEBUG === 'true') {
+            logger.info('Filled password field via enterPassword()');
+        }
         await $(this.selectors.passwordInput).setValue(password);
     }
 
@@ -72,7 +100,7 @@ class LoginPage extends BasePage {
     async isUsernameInputEmpty() {
         const value = await this.getUsernameValue();
         const isEmpty = value === '';
-        console.log(`Username field empty: ${isEmpty}`);
+        logger.warn(`Username field empty: ${isEmpty}`);
         return isEmpty;
     }
 
@@ -83,7 +111,7 @@ class LoginPage extends BasePage {
     async isPasswordInputEmpty() {
         const value = await this.getPasswordValue();
         const isEmpty = value === '';
-        console.log(`Password field empty: ${isEmpty}`);
+        logger.warn(`Password field empty: ${isEmpty}`);
         return isEmpty;
     }
 
@@ -116,7 +144,7 @@ class LoginPage extends BasePage {
      */
     async getErrorMessage() {
         const errorMessage = await $(this.selectors.errorMessage).getText();
-        console.log(`Error message: "${errorMessage}"`);
+        logger.info(`Error message: "${errorMessage}"`);
         return errorMessage;
     }
     
@@ -126,33 +154,8 @@ class LoginPage extends BasePage {
      */
     async isErrorMessageDisplayed() {
         const isDisplayed = await $(this.selectors.errorMessage).isDisplayed();
-        console.log(`Error message displayed: ${isDisplayed}`);
+        logger.info(`Error message displayed: ${isDisplayed}`);
         return isDisplayed;
-    }
-
-    /**
-     * Check if the error message contains the expected message
-     * @param {string} expectedMessage - The partial or full message to compare
-     * @returns {boolean}
-     */
-    async errorContainsExpectedMessage(expectedMessage) {
-        const actualMessage = await this.getErrorMessage();
-        return actualMessage.trim().toLowerCase().includes(expectedMessage.trim().toLowerCase());
-    }
-
-    /**
-     * Get available usernames from the page (for reference)
-     * @returns {string[]} - Array of accepted usernames
-     */
-    async getAcceptedUsernames() {
-        try {
-            const credentialsText = await $(this.selectors.credentialsContainer).getText();
-            console.log('Available usernames retrieved from page');
-            return credentialsText.split('\n').filter(line => line && !line.includes('Accepted'));
-        } catch (error) {
-            console.log('⚠️ Could not retrieve usernames from page, using default list');
-            return ['standard_user', 'locked_out_user', 'problem_user', 'performance_glitch_user'];
-        }
     }
 
     /**
