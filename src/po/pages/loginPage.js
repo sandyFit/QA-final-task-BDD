@@ -92,30 +92,14 @@ class LoginPage extends BasePage {
   * Clear the username input - Simple and reliable approach
   */
     async clearUsername() {
-        const usernameField = await $(this.selectors.usernameInput);
-        await usernameField.waitForDisplayed();
-        await usernameField.click();
-
-        // Select all text and delete it
-        await browser.keys(['Control', 'a']);
-        await browser.keys('Delete');
-
-        console.log("Username field cleared");
+        await this.clearText(this.selectors.usernameInput);
     }
 
     /**
      * Clear the password input - Simple and reliable approach
      */
     async clearPassword() {
-        const passwordField = await $(this.selectors.passwordInput);
-        await passwordField.waitForDisplayed();
-        await passwordField.click();
-
-        // Select all text and delete it
-        await browser.keys(['Control', 'a']);
-        await browser.keys('Delete');
-
-        console.log("Password field cleared");
+        await this.clearText(this.selectors.passwordInput);
     }
 
     /**

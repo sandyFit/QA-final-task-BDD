@@ -31,6 +31,7 @@ class BasePage {
 
     /**
      * Wait for the page to be fully loaded (readyState === "complete")
+     * Can be overridden by subclasses for page-specific loading verification
      * Throws an error if the page doesn't load within the timeout
      */
     waitForPageLoad() {
@@ -60,7 +61,9 @@ class BasePage {
     async clearText(selector) {
         const el = await $(selector);
         await el.waitForDisplayed();
-        await el.setValue(''); // This is the ONLY reliable way for SauceDemo
+        await el.click();
+        await browser.keys(['Control', 'a']);
+        await browser.keys('Delete');
         console.log(`✅ Successfully cleared field: ${selector}`);
     }
 
@@ -98,3 +101,4 @@ class BasePage {
 }
 
 module.exports = BasePage;
+

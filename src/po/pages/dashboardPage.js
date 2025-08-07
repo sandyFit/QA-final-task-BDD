@@ -13,19 +13,34 @@ class DashboardPage extends BasePage {
     }
 
     /**
-     * Check if the dashboard (inventory) page is fully loaded
-     * @returns {boolean} - True if the inventory container is displayed
+     * Override base waitForPageLoad to include dashboard-specific verification
+     * Waits for both document ready state AND inventory container visibility
      */
-    isLoaded() {
-        return $('[data-test="inventory-container"]').isDisplayed();
+    waitForPageLoad() {
+        // First wait for basic page load
+        super.waitForPageLoad();
+
+        // Then wait for dashboard-specific elements
+        browser.waitUntil(() => {
+            return $('[data-test="inventory-container"]').isDisplayed();
+        }, {
+            timeout: 5000,
+            timeoutMsg: 'Dashboard inventory container did not appear in time'
+        });
+
+        console.log('Dashboard page fully loaded with inventory container visible');
     }
 
     /**
-     * Get the header title text (e.g., "Swag Labs")
-     * @returns {string} - The text content of the logo header
+     * Check if the dashboard is currently loaded (for verification purposes)
+     * @returns {boolean} - True if the inventory container is displayed
      */
-    getHeaderTitle() {
-        return $(".app_logo").getText();
+    isLoaded() {
+        try {
+            return $('[data-test="inventory-container"]').isDisplayed();
+        } catch (error) {
+            return false;
+        }
     }
 }
 
