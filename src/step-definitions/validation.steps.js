@@ -36,29 +36,34 @@ Then('login should be successful', async () => {
 });
 
 // 🔄 Error validation stays on login page
-Then('I should see an error if login fails', async () => {
-    logger.info('Checking for login failure indicators...');
+Then(/^I should see the error message "([^"]+)"$/, async (expectedMessage) => {
+    logger.info(`Checking for login failure: expecting "${expectedMessage}"`);
 
-    // Verify we're still on login page using page object
-    try {
-        // Check if login page elements are still present
-        const loginPageReady = await pages("login").isLoginPageDisplayed(); 
-        expect(loginPageReady).toBe(true);
-    } catch (error) {
-        // Fallback: Check URL doesn't contain inventory
-        const currentUrl = browser.getUrl();
-        const isOnLoginPage = !currentUrl.includes('inventory');
-        expect(isOnLoginPage).toBe(true);
-    }
+    const loginPageReady = await pages("login").isLoginPageDisplayed();
+    expect(loginPageReady).toBe(true);
 
-    // Error checking
     const errorDisplayed = await pages("login").isErrorMessageDisplayed();
     expect(errorDisplayed).toBe(true);
 
-    const errorMessage = await pages("login").getErrorMessage();
-    expect(errorMessage.length).toBeGreaterThan(0);
-    
+    const actualMessage = await pages("login").getErrorMessage();
+    expect(actualMessage).toContain(expectedMessage); // <-- allows prefix/suffix
 
-    logger.info(`✅ Login failure properly handled. Error: "${errorMessage}"`);
+    logger.info(`✅ Correct error message displayed: "${actualMessage}"`);
 });
 
+// Dashboard title or error fallback
+Then(/^I should see the dashboard title "([^"]+)" if login is successful or an error$/, async (expectedTitle) => {
+    logger.info(`Verifying if dashboard is visible or an error is shown...`);
+
+    const dashboardVisible = await pages("dashboard").isDashboardDisplayed();
+    if (dashboardVisible) {
+        const actualTitle = await pages("dashboard").getCurrentPageTitle();
+        expect(actualTitle).toBe(expectedTitle);
+        logger.info(`✅ Dashboard title is "${actualTitle}"`);
+    } else {
+        const errorDisplayed = await pages("login").isErrorMessageDisplayed();
+        expect(errorDisplayed).toBe(true);
+        const actualMessage = await pages("login").getErrorMessage();
+        logger.info(`ℹ️ Login failed with error: "${actualMessage}"`);
+    }
+});
